@@ -231,6 +231,16 @@ object OptionT extends OptionTInstances {
     OptionT(F.pure(None))
 
   /**
+   * Uses the [[http://typelevel.org/cats/guidelines.html#partially-applied-type-params Partially Applied Type Params technique]] for ergonomics.
+   */
+  final private[data] class NoneFPartiallyApplied[F[_]](private val dummy: Boolean = true) extends AnyVal {
+    def apply[A, B](value: F[A])(implicit F: Applicative[F]): OptionT[F, B] =
+      OptionT(F.as(value, None))
+  }
+
+  def noneF[F[_]]: NoneFPartiallyApplied[F] = new NoneFPartiallyApplied[F]
+
+  /**
    * Transforms an `Option` into an `OptionT`, lifted into the specified `Applicative`.
    *
    * {{{

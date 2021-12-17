@@ -444,6 +444,12 @@ class OptionTSuite extends CatsSuite {
     assert(OptionT.none[List, Int] === (OptionT[List, Int](List(None))))
   }
 
+  test("noneF") {
+    forAll { (xs: List[Int]) =>
+      assert(xs.map(_ => Option.empty[Int]) === (OptionT.noneF(xs).value))
+    }
+  }
+
   test("implicit Show[OptionT] instance and explicit show method are consistent") {
     forAll { (optionT: OptionT[List, Int]) =>
       assert(optionT.show === (implicitly[Show[OptionT[List, Int]]].show(optionT)))
